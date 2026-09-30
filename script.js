@@ -35,7 +35,7 @@ l.innerHTML=a.map(f=>'<div class="dvCard"><div class="dvCardMain" data-dvmenu="'
 async function dvGuard(f){if(!f.pin)return true;const p=await dvAsk({title:'Enter PIN',input:1,type:'password',mode:'numeric',max:4,ok:'Unlock'});if(p===null)return false;if(await dvHash(p)===f.pin)return true;dvToast('Wrong PIN');return false}
 async function dvFileMenu(id,btn){const f=await dvDB.get(+id);if(!f)return;
 if(btn.dataset.dvopen)return dvEditFile(f);
-dvPop(btn,'Run','play',()=>dvRunFile(f)],['Rename','edit',()=>dvRename(f)],['Edit','code',()=>dvEditFile(f)],['Delete','delete',()=>dvDelFile(f)],['Share','share',()=>dvShareFile(f)],['PIN','lock',()=>dvPin(f)],['Exit','close',()=>{})}
+dvPop(btn,[ ['Run','play',()=>dvRunFile(f)],['Rename','edit',()=>dvRename(f)],['Edit','code',()=>dvEditFile(f)],['Delete','delete',()=>dvDelFile(f)],['Share','share',()=>dvShareFile(f)],['PIN','lock',()=>dvPin(f)],['Exit','close',()=>{}] ])}
 async function dvRunFile(f){if(!await dvGuard(f))return;dvRunCode(f.code);dvGo('console')}
 async function dvEditFile(f){if(await dvGuard(f))dvOpenEd(f)}
 async function dvRename(f){if(!await dvGuard(f))return;const n=await dvAsk({title:'Rename File',input:1,value:f.name,ok:'Rename'});if(n===null||!n.trim())return;f.name=dvName(n);await dvDB.put(f);dvFiles();dvToast('Renamed')}
@@ -54,7 +54,7 @@ dvWorker.onmessage=e=>{const d=e.data;if(d.t==='done')dvLog('sys','Finished');el
 dvWorker.onerror=e=>{dvLog('error',e.message||'Worker error')};dvWorker.postMessage(code);dvWTimer=setTimeout(()=>{dvStop();dvLog('warn','Stopped: script ran longer than 15 seconds')},15000)}
 /* Editor */
 const dvH={u:[''],r:[],t:0};
-const dvTools='run','play','Run'],['console','term','Console'],['save','save','Save'],['undo','undo','Undo'],['redo','redo','Redo'],['copy','copy','Copy'],['paste','paste','Paste'],['select','sel','Select'],['delete','delete','Delete'],['lines','lines','Lines'],['wrap','wrap','Wrap'],['theme','sun','Theme'],['import','up','Import'],['export','down','Export'],['new','add','New';
+const dvTools=[ ['run','play','Run'],['console','term','Console'],['save','save','Save'],['undo','undo','Undo'],['redo','redo','Redo'],['copy','copy','Copy'],['paste','paste','Paste'],['select','sel','Select'],['delete','delete','Delete'],['lines','lines','Lines'],['wrap','wrap','Wrap'],['theme','sun','Theme'],['import','up','Import'],['export','down','Export'],['new','add','New'] ];
 dvQ('#dvTools').innerHTML=dvTools.map(t=>'<button class="dvTB" data-dvt="'+t[0]+'" data-dvtb="'+t[0]+'">'+dvIco(t[1])+t[2]+'</button>').join('');
 function dvPush(){const v=dvCode.value;if(v!==dvH.u[dvH.u.length-1]){dvH.u.push(v);if(dvH.u.length>200)dvH.u.shift();dvH.r=[]}}
 function dvGutter(){const n=dvCode.value.split('\n').length;let s='';for(let i=1;i<=n;i++)s+=i+'\n';dvGut.textContent=s;dvGut.scrollTop=dvCode.scrollTop}
@@ -90,7 +90,7 @@ case 'new':dvOpenEd();break;
 case 'import':dvCloseDrawers();dvQ('#dvFile').click();break;
 case 'grid':case 'list':localStorage.dvView=a;dvFiles();break;
 case 'clear':dvClearCon();break;
-case 'fab':dvPop(el,'How to use','help',()=>dvGo('guide')],['Editor','code',()=>dvOpenEd(),true);break;
+case 'fab':dvPop(el,[ ['How to use','help',()=>dvGo('guide')],['Editor','code',()=>dvOpenEd()] ],true);break;
 case 'share':dvCloseDrawers();try{if(navigator.share)await navigator.share({title:'DV-Runner',url:location.origin+dvBase});else{await navigator.clipboard.writeText(location.origin+dvBase);dvToast('Link copied')}}catch(e){}break;
 case 'install':dvCloseDrawers();if(dvInstallEv){dvInstallEv.prompt();dvInstallEv=null}else dvToast('Use the browser menu: Add to Home screen');break}}
 document.addEventListener('click',e=>{const t=e.target.closest('[data-dvgo],[data-dvact],[data-dvclose],[data-dvback],[data-dvmenu],[data-dvt]');if(!t)return;const d=t.dataset;if(d.dvgo)dvGo(d.dvgo);else if(d.dvact)dvAct(d.dvact,t);else if('dvclose' in d)dvCloseDrawers();else if('dvback' in d)dvBack();else if(d.dvmenu)dvFileMenu(d.dvmenu,t);else if(d.dvt)dvTool(d.dvt)});
