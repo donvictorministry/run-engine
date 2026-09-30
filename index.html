@@ -24,5 +24,5 @@
 <div id="dvModal"><div id="dvModalBox"></div></div>
 <div id="dvToast"></div>
 <input type="file" id="dvFile" accept=".js,text/javascript,application/javascript" hidden>
-<script src="desktop-blocker.js"></script><script src="settings.js"></script><script src="about-app.js"></script><script src="about-dev.js"></script><script src="contact-us.js"></script><script src="script.js"></script>
-</body></html>
+<script>window.dvShowErr=function(m){var d=document.createElement('pre');d.style.cssText='position:fixed;top:60px;left:0;right:0;z-index:99;background:#fff;color:#c00;font:18px monospace;white-space:pre-wrap;padding:8px;border:2px solid #c00';d.textContent=m;document.body.appendChild(d)};window.onerror=function(m,s,l,c){dvShowErr('ERROR: '+m+' | '+String(s).split('/').pop()+':'+l+':'+c)};</script><script src="desktop-blocker.js"></script><script src="settings.js"></script><script src="about-app.js"></script><script src="about-dev.js"></script><script src="contact-us.js"></script><script src="script.js"></script>
+<script>setTimeout(function(){if(window.dvBlocked)return;var m=[];if(!window.dvSettings)m.push('settings.js');if(!window.dvAboutApp)m.push('about-app.js');if(!window.dvAboutDev)m.push('about-dev.js');if(!window.dvContactUs)m.push('contact-us.js');if(!document.querySelector('#dvV-home.dvOn,.dvView.dvOn'))m.push('script.js did not start');if(m.length)dvShowErr('NOT RUNNING: '+m.join(', '))},2500)</script></body></html>
